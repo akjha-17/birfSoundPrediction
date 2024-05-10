@@ -1,6 +1,6 @@
 keras.models
 matplotlib
 tensorflow==2.16.1   
-tensorflow_io==0.37.0
+tensorflow_io
 flask
 werkzeug
