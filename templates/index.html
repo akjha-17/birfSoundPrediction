@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -34,5 +34,43 @@
       });
     });
   </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bird Sound Detection</title>
+</head>
+<body>
+    <h1>Capuchin Bird Sound Detection</h1>
+    <form id="upload-form" method="post" enctype="multipart/form-data">
+        <label for="audiofile">Select audio file (WAV or MP3):</label>
+        <input type="file" id="audiofile" name="audio" accept=".wav, .mp3">
+        <br><br>
+        <button type="submit">Upload</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        const form = document.getElementById('upload-form');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('result').innerHTML = `<b>Error:</b> ${data.error}`;
+                } else {
+                    document.getElementById('result').innerHTML = `<b>${data.filename}:</b> ${data.num_sounds} bird sounds detected`;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
