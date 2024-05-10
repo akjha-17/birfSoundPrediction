@@ -167,5 +167,4 @@ def upload():
     else:
         return jsonify({'error': 'No audio file uploaded'}), 400
 
-if __name__ == "__main__":
-    app.run()
+
