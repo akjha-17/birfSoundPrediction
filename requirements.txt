@@ -1,6 +1,6 @@
-keras.models
+keras 
 matplotlib
-tensorflow==2.16.1   
+tensorflow
 tensorflow_io
 flask
 werkzeug
