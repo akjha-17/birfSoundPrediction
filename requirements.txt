@@ -1,6 +1,5 @@
 keras 
 matplotlib
 tensorflow
-tensorflow_io
 flask
 werkzeug
