@@ -1,76 +1,299 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Bird Sound Detection</title>
-</head>
-<body>
-  <h1>Capuchin Bird Sound Detection</h1>
-  <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
-    <label for="audiofile">Select audio file (WAV or MP3):</label>
-    <input type="file" id="audiofile" name="audio" accept=".wav, .mp3">
-    <br><br>
-    <button type="submit">Upload</button>
-  </form>
-  <p id="result"></p>
-
-  <script>
-    const form = document.getElementById('upload-form');
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const formData = new FormData(form);
-      fetch('/upload', {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.error) {
-          document.getElementById('result').innerHTML = `<b>Error:</b> ${data.error}`;
-        } else {
-          document.getElementById('result').innerHTML = `<b>${data.filename}:</b> ${data.num_sounds}  bird sounds detected`;
-        }
-      });
-    });
-  </script>
-</body>
-</html> -->
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bird Sound Detection</title>
-</head>
-<body>
-    <h1>Capuchin Bird Sound Detection</h1>
-    <form id="upload-form" method="post" enctype="multipart/form-data">
-        <label for="audiofile">Select audio file (WAV or MP3):</label>
-        <input type="file" id="audiofile" name="audio" accept=".wav, .mp3">
-        <br><br>
-        <button type="submit">Upload</button>
-    </form>
-    <p id="result"></p>
+ <html lang="en">
+ <head> 
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title> Bird Sound Detection</title>
+     <style>
+         body {
+             font-family: Arial, sans-serif;
+             background-color: #0f1d2b;
+             margin: 0;
+             padding: 0;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+             height: 100vh;
+         }
+         .button-85 {
+             max-width: 500px;
+             padding: 20px;
+             /* background-color: #fff; */
+             /* border-radius: 10px; */
+             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+             padding: 0.6em 2em;
+  border: none;
+  outline: none;
+  color: rgb(255, 255, 255);
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+         }
+         
+.button-85:before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing-button-85 20s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+}
 
-    <script>
-        const form = document.getElementById('upload-form');
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(form);
-            fetch('/upload', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    document.getElementById('result').innerHTML = `<b>Error:</b> ${data.error}`;
-                } else {
-                    document.getElementById('result').innerHTML = `<b>${data.filename}:</b> ${data.num_sounds} bird sounds detected`;
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+@keyframes glowing-button-85 {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.button-85:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #222;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
+         #video-background {
+             position: fixed;
+             left:0;
+             top:0;
+             min-width: 100%;
+             max-height: 99%;
+             
+             height: auto;
+             z-index: -1000;
+             overflow: hidden;
+         }
+         h1 {
+             text-align: center;
+             margin-bottom: 30px;
+             color: #007bff;
+         }
+         form {
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+         }
+         label {
+             font-weight: bold;
+             margin-bottom: 10px;
+         }
+         input[type="file"] {
+             margin-bottom: 20px;
+         }
+         button[type="submit"] {
+             padding: 10px 20px;
+             background-color: #007bff;
+             color: #fff;
+             border: none;
+             border-radius: 5px;
+             cursor: pointer;
+             transition: background-color 0.3s;
+         }
+         button[type="submit"]:hover {
+             background-color: #0056b3;
+         }
+         #result {
+             text-align: center;
+             margin-top: 20px;
+         }
+     </style>
+ </head>
+ <body>
+   <video id="video-background" autoplay loop muted>
+         <source src="/static/birdSound.mp4" type="video/mp4">
+         Your browser does not support the video tag.
+     </video>
+     <div class="button-85">
+         <h1> Bird Sound Detection</h1>
+         <form id="upload-form" method="post" enctype="multipart/form-data">
+             <label for="audiofile">Select audio file (WAV or MP3):</label>
+             <input type="file" id="audiofile" name="audio" accept=".wav, .mp3">
+             <br><br>
+             <button type="submit">Upload</button>
+         </form>
+         <p id="result"></p>
+     </div>
+ 
+     <script>
+         const form = document.getElementById('upload-form');
+         form.addEventListener('submit', function(e) {
+             e.preventDefault();
+             const formData = new FormData(form);
+             fetch('/upload', {
+                 method: 'POST',
+                 body: formData
+             })
+             .then(response => response.json())
+             .then(data => {
+                 if (data.error) {
+                     document.getElementById('result').innerHTML = `<b>Error:</b> ${data.error}`;
+                 } else {
+                     document.getElementById('result').innerHTML = `<b>${data.filename}:</b> ${data.num_sounds} bird sounds detected`;
+                 }
+             });
+         });
+     </script>
+ </body>
+ </html> 
+
+
+
+
+
+
+
+
+
+
+ <!-- <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Capuchin Bird Sound Detection</title>
+     <style>
+         body, html {
+             margin: 0;
+             padding: 0;
+             height: 100%;
+         }
+         #video-background {
+             position: fixed;
+             right: 0;
+             bottom: 0;
+             min-width: 100%;
+             min-height: 100%;
+             width: auto;
+             height: auto;
+             z-index: -1000;
+             overflow: hidden;
+         }
+         .overlay {
+             position: fixed;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+             z-index: -999;
+         }
+         .container {
+             position: relative;
+             z-index: 1;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+             height: 100%;
+         }
+         .content {
+             max-width: 500px;
+             padding: 20px;
+             background-color: rgba(255, 255, 255, 0.8);
+             border-radius: 10px;
+             text-align: center;
+         }
+         h1 {
+             margin-bottom: 30px;
+             color: #007bff;
+         }
+         form {
+             margin-top: 20px;
+         }
+         label {
+             font-weight: bold;
+             margin-bottom: 10px;
+         }
+         input[type="file"] {
+             margin-bottom: 20px;
+         }
+         button[type="submit"] {
+             padding: 10px 20px;
+             background-color: #007bff;
+             color: #fff;
+             border: none;
+             border-radius: 5px;
+             cursor: pointer;
+             transition: background-color 0.3s;
+         }
+         button[type="submit"]:hover {
+             background-color: #0056b3;
+         }
+         #result {
+             margin-top: 20px;
+         }
+     </style>
+ </head>
+ <body>
+     <video id="video-background" autoplay loop muted>
+         <source src="Untitled design.mp4" type="video/mp4">
+         Your browser does not support the video tag.
+     </video>
+     <div class="overlay"></div>
+     <div class="container">
+         <div class="content">
+             <h1>Bird Sound Detection</h1>
+             <form id="upload-form" method="post" enctype="multipart/form-data">
+                 <label for="audiofile">Select audio file (WAV or MP3):</label>
+                 <input type="file" id="audiofile" name="audio" accept=".wav, .mp3">
+                 <br><br>
+                 <button type="submit">Upload</button>
+             </form>
+             <p id="result"></p>
+         </div>
+     </div>
+     
+     <script>
+         const form = document.getElementById('upload-form');
+         form.addEventListener('submit', function(e) {
+             e.preventDefault();
+             const formData = new FormData(form);
+             fetch('/upload', {
+                 method: 'POST',
+                 body: formData
+             })
+             .then(response => response.json())
+             .then(data => {
+                 if (data.error) {
+                     document.getElementById('result').innerHTML = `<b>Error:</b> ${data.error}`;
+                 } else {
+                     document.getElementById('result').innerHTML = `<b>${data.filename}:</b> ${data.num_sounds} bird sounds detected`;
+                 }
+             });
+         });
+     </script>
+ </body>
+ </html> -->
